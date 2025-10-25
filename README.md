@@ -2,8 +2,6 @@
 
 Blog App is a full-stack web application built with the MERN stack (MongoDB, Express, React, Node.js). It provides secure user authentication and complete CRUD functionality for blog posts (create, read, update, delete), and lets users browse and read blogs created by other users. The repository includes clear local development instructions and an optional Docker Compose setup for containerized deployment.
 
-Also see [E-commerce_website-using-React-Redux](https://github.com/khushi2706/E-commerce-website-using-React-Redux)
-
 ## Functionalities
 
 - **Authentication:** Secure user authentication system to protect your blogs.
