@@ -203,7 +203,7 @@ const Blogs = ({ title, desc, img, user, isUser, id, date }) => {
         <Box sx={{ px: 2, pb: 2 }}>
           <Typography
             variant="caption"
-            onClick={() => navigate(`/myBlogs/${id}`)}
+            onClick={() => navigate(`/blogs/${id}`)}
             sx={{
               color: '#3282B8',
               fontWeight: 'bold',

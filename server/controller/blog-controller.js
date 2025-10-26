@@ -6,7 +6,7 @@ const { ApiError } = require("../utils/ApiError");
 
 const getAllBlogs = async (req, res, next) => {
   try {
-    const blogs = await Blog.find();
+    const blogs = await Blog.find().populate('user');
     if (!blogs || blogs.length === 0) {
       return res.status(404).json(new ApiError(404, "No blogs found"));
     }
@@ -59,7 +59,7 @@ const updateBlog = async (req, res, next) => {
 const getById = async (req, res, next) => {
   const id = req.params.id;
   try {
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id).populate('user');
     if (!blog) {
       return res.status(404).json(new ApiError(404, "Blog not found"));
     }
@@ -90,7 +90,12 @@ const deleteBlog = async (req, res, next) => {
 const getByUserId = async (req, res, next) => {
   const userId = req.params.id;
   try {
-    const userBlogs = await User.findById(userId).populate("blogs");
+    const userBlogs = await User.findById(userId).populate({
+      path: "blogs",
+      populate: {
+        path: "user"
+      }
+    });
     if (!userBlogs) {
       return res.status(404).json(new ApiError(404, "No blog found for this user"));
     }

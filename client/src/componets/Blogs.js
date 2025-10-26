@@ -38,9 +38,7 @@ const Blogs = () => {
       })
       .finally(() => setLoading(false));
   }, []);
-  
-  console.log("Blogs state:", blogs);
-  
+
   if (loading) {
     return (
       <Box

@@ -7,6 +7,7 @@ import Blogs from './componets/Blogs';
 import UserBlogs from './componets/UserBlogs'
 import AddBlogs from './componets/AddBlogs'
 import BlogDetail from './componets/BlogDetail'
+import ViewBlog from './componets/ViewBlog'
 import LandingPage from './componets/LandingPage'
 import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from './store';
@@ -33,6 +34,7 @@ function App() {
       <Route path="/" element={isLoggedIn ? <Blogs /> : <LandingPage/>}></Route>
       <Route path="/login" element={<Login/>}></Route>
       <Route path="/blogs" element={<Blogs/>}></Route>
+      <Route path="/blogs/:id" element={<ViewBlog/>}></Route>
       <Route path="/myBlogs" element={<UserBlogs/>}></Route>
       <Route path="/myBlogs/:id" element={<BlogDetail/>}></Route>
       <Route path="/blogs/add" element={<AddBlogs />} />
