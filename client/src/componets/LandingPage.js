@@ -291,45 +291,6 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* Stats Section */}
-      <Box
-        sx={{
-          py: { xs: 8, md: 12 },
-          px: { xs: 2, md: 0 },
-          background: "linear-gradient(90deg, #0F4C75 0%, #3282B8 100%)",
-          color: "white",
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid container spacing={4}>
-            {[
-              { number: "1000+", label: "Active Bloggers" },
-              { number: "50K+", label: "Published Blogs" },
-              { number: "100K+", label: "Monthly Readers" },
-            ].map((stat, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Box sx={{ textAlign: "center" }}>
-                  <Typography
-                    variant="h3"
-                    sx={{
-                      fontWeight: "bold",
-                      mb: 1,
-                      fontSize: { xs: "36px", md: "48px" },
-                      color: "#FFD700",
-                    }}
-                  >
-                    {stat.number}
-                  </Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 300, fontSize: "18px" }}>
-                    {stat.label}
-                  </Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
-
       {/* CTA Section */}
       <Box
         sx={{
