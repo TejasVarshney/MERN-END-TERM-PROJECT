@@ -18,15 +18,18 @@ const Login = () => {
     password: "",
   });
   const [isSignup, setIsSignup] = useState(isSignupButtonPressed || false);
+  
   const handleChange = (e) => {
     setInputs((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
+  
   useEffect(() => {
     setIsSignup(isSignupButtonPressed);
   }, [isSignupButtonPressed]);
+  
   const sendRequest = async (type = "login") => {
     console.log("inside send req");
     console.log(`${config.BASE_URL}/api/users/${type}`);
@@ -37,15 +40,12 @@ const Login = () => {
         password: inputs.password,
       });
 
-      // The server wraps the payload under `data` (ApiResponse -> { statusCode, data, message, success })
-      // so return the inner `data` object which contains the `user` field the callers expect.
       const responseBody = res.data;
       console.log("return");
       console.log(responseBody);
       return responseBody.data;
     } catch (err) {
       console.error("Request error:", err);
-      // If server returned a structured ApiError, propagate that so callers can read the message
       const apiError = err?.response?.data || { message: err.message || "Request failed" };
       throw apiError;
     }
@@ -63,7 +63,6 @@ const Login = () => {
         .then(() => dispath(authActions.login()))
         .then(() => naviagte("/blogs"))
         .catch((err) => {
-          // err may be an ApiError object from server or a generic Error
           const message = err?.message || err?.data?.message || "Signup failed";
           console.error("Signup failed:", err);
           alert(message);
@@ -83,66 +82,213 @@ const Login = () => {
         });
     }
   };
+  
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '70vh',
+        background: 'linear-gradient(135deg, #f7fbff 0%, #e0f2ff 50%, #f0f9ff 100%)',
+        padding: '20px'
+      }}
+    >
+      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
         <Box
-          maxWidth={400}
+          maxWidth={420}
           display="flex"
-          flexDirection={"column"}
+          flexDirection="column"
           alignItems="center"
-          justifyContent={"center"}
-          boxShadow="10px 10px 20px #ccc"
-          padding={3}
-          margin="auto"
-          marginTop={5}
-          borderRadius={5}
+          justifyContent="center"
+          sx={{
+            margin: "auto",
+            padding: '40px',
+            borderRadius: '16px',
+            background: 'white',
+            boxShadow: '0 4px 12px rgba(15, 76, 117, 0.1)',
+            border: '1px solid #E5E7EB',
+            animation: 'slideUp 0.5s ease-out'
+          }}
         >
-          <Typography variant="h2" padding={3} textAlign="center">
-            {isSignup ? "Signup" : "Login"}
-          </Typography>
+          {/* Header */}
+          <Box
+            sx={{
+              mb: 3,
+              textAlign: 'center',
+              animation: 'slideIn 0.5s ease'
+            }}
+          >
+            <Typography 
+              variant="h3" 
+              sx={{
+                fontWeight: 'bold',
+                background: 'linear-gradient(90deg, #0F4C75 0%, #3282B8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                mb: 1,
+                fontSize: '32px'
+              }}
+            >
+              {isSignup ? "Join BlogHub" : "Welcome Back"}
+            </Typography>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#6B7280',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}
+            >
+              {isSignup 
+                ? "Create your account to start sharing stories" 
+                : "Sign in to your BlogHub account"}
+            </Typography>
+          </Box>
+
+          {/* Name Field - Only for Signup */}
           {isSignup && (
             <TextField
+              fullWidth
               name="name"
               onChange={handleChange}
               value={inputs.name}
-              placeholder="Name"
+              placeholder="Full Name"
               margin="normal"
+              variant="outlined"
+              required
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  backgroundColor: '#f7fbff',
+                  '&:hover fieldset': {
+                    borderColor: '#3282B8',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#0F4C75',
+                    borderWidth: '2px'
+                  },
+                },
+                '& .MuiOutlinedInput-input::placeholder': {
+                  color: '#9CA3AF',
+                  opacity: 1,
+                }
+              }}
             />
-          )}{" "}
+          )}
+
+          {/* Email Field */}
           <TextField
+            fullWidth
             name="email"
             onChange={handleChange}
             value={inputs.email}
-            type={"email"}
-            placeholder="Email"
+            type="email"
+            placeholder="Email Address"
             margin="normal"
+            variant="outlined"
+            required
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                backgroundColor: '#f7fbff',
+                '&:hover fieldset': {
+                  borderColor: '#3282B8',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#0F4C75',
+                  borderWidth: '2px'
+                },
+              },
+              '& .MuiOutlinedInput-input::placeholder': {
+                color: '#9CA3AF',
+                opacity: 1,
+              }
+            }}
           />
+
+          {/* Password Field */}
           <TextField
+            fullWidth
             name="password"
             onChange={handleChange}
             value={inputs.password}
-            type={"password"}
+            type="password"
             placeholder="Password"
             margin="normal"
+            variant="outlined"
+            required
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                backgroundColor: '#f7fbff',
+                '&:hover fieldset': {
+                  borderColor: '#3282B8',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#0F4C75',
+                  borderWidth: '2px'
+                },
+              },
+              '& .MuiOutlinedInput-input::placeholder': {
+                color: '#9CA3AF',
+                opacity: 1,
+              }
+            }}
           />
+
+          {/* Submit Button */}
           <Button
             type="submit"
+            fullWidth
             variant="contained"
-            sx={{ borderRadius: 3, marginTop: 3 }}
-            color="warning"
+            sx={{ 
+              borderRadius: '8px', 
+              marginTop: '24px',
+              padding: '12px',
+              fontWeight: 'bold',
+              fontSize: '16px',
+              background: 'linear-gradient(90deg, #0F4C75 0%, #3282B8 100%)',
+              textTransform: 'none',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 8px 16px rgba(15, 76, 117, 0.3)'
+              }
+            }}
           >
-            Submit
+            {isSignup ? "Create Account" : "Sign In"}
           </Button>
+
+          {/* Divider */}
+          <Box sx={{ my: 2, textAlign: 'center', color: '#D1D5DB', fontSize: '14px' }}>
+            — or —
+          </Box>
+
+          {/* Toggle Button */}
           <Button
             onClick={() => setIsSignup(!isSignup)}
-            sx={{ borderRadius: 3, marginTop: 3 }}
+            fullWidth
+            sx={{ 
+              borderRadius: '8px',
+              textTransform: 'none',
+              color: '#3282B8',
+              fontWeight: '600',
+              fontSize: '14px',
+              border: '2px solid #E5E7EB',
+              backgroundColor: '#f7fbff',
+              '&:hover': {
+                backgroundColor: '#f0f9ff',
+                borderColor: '#3282B8'
+              }
+            }}
           >
-            Change To {isSignup ? "Login" : "Signup"}
+            {isSignup 
+              ? "Already have an account? Sign In" 
+              : "Create a new account"}
           </Button>
         </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 

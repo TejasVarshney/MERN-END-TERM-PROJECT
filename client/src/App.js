@@ -7,13 +7,15 @@ import Blogs from './componets/Blogs';
 import UserBlogs from './componets/UserBlogs'
 import AddBlogs from './componets/AddBlogs'
 import BlogDetail from './componets/BlogDetail'
-import { useDispatch } from 'react-redux';
+import LandingPage from './componets/LandingPage'
+import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from './store';
 
 
 
 function App() {
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   useEffect(()=>{
     const userId = localStorage.getItem("userId");
@@ -28,6 +30,7 @@ function App() {
     </header>
     <main>
     <Routes>
+      <Route path="/" element={isLoggedIn ? <Blogs /> : <LandingPage/>}></Route>
       <Route path="/login" element={<Login/>}></Route>
       <Route path="/blogs" element={<Blogs/>}></Route>
       <Route path="/myBlogs" element={<UserBlogs/>}></Route>

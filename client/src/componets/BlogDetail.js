@@ -1,18 +1,19 @@
-import { Button, InputLabel, TextField, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { Button, InputLabel, TextField, Typography, Container, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import config from "../config";
 
-const labelStyles = { mb: 1, mt: 2, fontSize: "24px", fontWeight: "bold" };
+const labelStyles = { mb: 1.5, mt: 2.5, fontSize: "15px", fontWeight: "600", color: '#0F4C75' };
 
 const BlogDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [inputs, setInputs] = useState({ title: "", description: "" });
+  const [inputs, setInputs] = useState({ title: "", desc: "" });
   const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setInputs((prevState) => ({
@@ -24,15 +25,21 @@ const BlogDetail = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchDetails = useCallback(async () => {
     try {
+      setLoading(true);
       const res = await axios.get(`${config.BASE_URL}/api/blogs/${id}`);
       const data = res.data;
-      setBlog(data.blog);
+      
+      // Handle both data.blog and data directly
+      const blogData = data.blog || data.data || data;
+      setBlog(blogData);
       setInputs({
-        title: data.blog.title || "",
-        description: data.blog.description || "",
+        title: blogData.title || "",
+        desc: blogData.desc || blogData.description || "",
       });
     } catch (err) {
-      console.error("Failed to fetch blog details:", err);
+      // Handle error silently
+    } finally {
+      setLoading(false);
     }
   }, [id]);
 
@@ -42,13 +49,17 @@ const BlogDetail = () => {
 
   const sendRequest = async () => {
     try {
+      setIsSubmitting(true);
       const res = await axios.put(`${config.BASE_URL}/api/blogs/update/${id}`, {
         title: inputs.title,
-        description: inputs.description,
+        desc: inputs.desc,
       });
       return res.data;
     } catch (err) {
-      console.error("Failed to update blog:", err);
+      alert("Failed to update blog");
+      throw err;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -56,72 +67,180 @@ const BlogDetail = () => {
     e.preventDefault();
     sendRequest()
       .then((data) => {
-        console.log("Blog updated:", data);
-        navigate("/myBlogs/");
+        navigate("/myBlogs");
+      })
+      .catch((err) => {
+        // Error already shown in sendRequest
       });
   };
 
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '60vh'
+        }}
+      >
+        <CircularProgress sx={{ color: '#3282B8' }} />
+      </Box>
+    );
+  }
+
   return (
-    <div>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '70vh',
+        background: 'linear-gradient(135deg, #f7fbff 0%, #e0f2ff 50%, #f0f9ff 100%)',
+        padding: '20px'
+      }}
+    >
       {blog ? (
-        <form onSubmit={handleSubmit}>
-          <Box
-            border={3}
-            borderColor="linear-gradient(90deg, rgba(58,75,180,1) 2%, rgba(116,49,110,1) 36%, rgba(2,0,161,1) 73%, rgba(69,92,252,1) 100%)"
-            borderRadius={10}
-            boxShadow="10px 10px 20px #ccc"
-            padding={3}
-            margin={"auto"}
-            marginTop={3}
-            display="flex"
-            flexDirection={"column"}
-            width={"80%"}
-          >
-            <Typography
-              fontWeight={"bold"}
-              padding={3}
-              color="grey"
-              variant="h2"
-              textAlign={"center"}
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <Container maxWidth={600}>
+            <Box
+              sx={{
+                margin: "auto",
+                padding: '40px',
+                borderRadius: '16px',
+                background: 'white',
+                boxShadow: '0 4px 12px rgba(15, 76, 117, 0.1)',
+                border: '1px solid #E5E7EB',
+                animation: 'slideUp 0.5s ease-out'
+              }}
             >
-              Update Blog
-            </Typography>
-            <InputLabel sx={labelStyles}>Title</InputLabel>
-            <TextField
-              name="title"
-              onChange={handleChange}
-              value={inputs.title}
-              margin="auto"
-              variant="outlined"
-              required
-            />
-            <InputLabel sx={labelStyles}>Description</InputLabel>
-            <TextField
-              name="description"
-              onChange={handleChange}
-              value={inputs.description}
-              margin="auto"
-              variant="outlined"
-              multiline
-              rows={4}
-              required
-            />
-            <Button
-              sx={{ mt: 2, borderRadius: 4 }}
-              variant="contained"
-              color="warning"
-              type="submit"
-            >
-              Submit
-            </Button>
-          </Box>
+              {/* Header */}
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: 'bold',
+                  background: 'linear-gradient(90deg, #0F4C75 0%, #3282B8 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  mb: 3,
+                  textAlign: 'center',
+                  fontSize: '32px'
+                }}
+              >
+                Update Blog
+              </Typography>
+
+              {/* Title Field */}
+              <Box>
+                <InputLabel sx={labelStyles}>Title</InputLabel>
+                <TextField
+                  fullWidth
+                  name="title"
+                  onChange={handleChange}
+                  value={inputs.title}
+                  variant="outlined"
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#f7fbff',
+                      '&:hover fieldset': {
+                        borderColor: '#3282B8',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#0F4C75',
+                        borderWidth: '2px'
+                      },
+                    },
+                  }}
+                />
+              </Box>
+
+              {/* Description Field */}
+              <Box>
+                <InputLabel sx={labelStyles}>Description</InputLabel>
+                <TextField
+                  fullWidth
+                  name="desc"
+                  onChange={handleChange}
+                  value={inputs.desc}
+                  variant="outlined"
+                  multiline
+                  rows={8}
+                  required
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      backgroundColor: '#f7fbff',
+                      '&:hover fieldset': {
+                        borderColor: '#3282B8',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#0F4C75',
+                        borderWidth: '2px'
+                      },
+                    },
+                  }}
+                />
+              </Box>
+
+              {/* Buttons */}
+              <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={isSubmitting}
+                  sx={{
+                    borderRadius: '8px',
+                    padding: '12px',
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                    background: 'linear-gradient(90deg, #0F4C75 0%, #3282B8 100%)',
+                    textTransform: 'none',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 8px 16px rgba(15, 76, 117, 0.3)'
+                    },
+                    '&:disabled': {
+                      opacity: 0.6
+                    }
+                  }}
+                >
+                  {isSubmitting ? "Updating..." : "Update Blog"}
+                </Button>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => navigate("/myBlogs")}
+                  sx={{
+                    borderRadius: '8px',
+                    padding: '12px',
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                    color: '#3282B8',
+                    borderColor: '#3282B8',
+                    textTransform: 'none',
+                    backgroundColor: '#f7fbff',
+                    '&:hover': {
+                      backgroundColor: '#e0f2ff',
+                      borderColor: '#0F4C75',
+                      color: '#0F4C75'
+                    }
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Box>
+            </Box>
+          </Container>
         </form>
       ) : (
         <Typography textAlign="center" mt={5} variant="h5">
           Loading blog details...
         </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 

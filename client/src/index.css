@@ -1,4 +1,43 @@
-*{
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #0F4C75;
+  --secondary-color: #3282B8;
+  --accent-color: #00D4FF;
+  --success-color: #06D6A0;
+  --danger-color: #EF476F;
+  --warning-color: #FFD166;
+  --dark-bg: #0D1B2A;
+  --light-bg: #F7FBFF;
+  --card-bg: #ffffff;
+  --text-dark: #1A1A1A;
+  --text-light: #6B7280;
+  --border-color: #E5E7EB;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #f7fbff 0%, #e0f2ff 50%, #f0f9ff 100%);
+  min-height: 100vh;
+  color: var(--text-dark);
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  padding: 20px 0;
 }
